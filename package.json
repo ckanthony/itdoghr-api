@@ -1,0 +1,14 @@
+{
+  "name": "it-dog-voting",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "bull": "^4.3.0",
+    "dotenv": "^14.3.2",
+    "express": "^4.17.2",
+    "lodash": "^4.17.21",
+    "redis": "^4.0.2",
+    "socket.io": "^4.4.1"
+  }
+}

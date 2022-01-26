@@ -1,0 +1,69 @@
+<html>
+  <head>
+    <title>test client</title>
+  </head>
+  <script src="https://cdn.socket.io/4.4.1/socket.io.min.js" integrity="sha384-fKnu0iswBIqkjxrhQCTZ7qlLHOFEgNkRmK2vaO/LbTZSXdJfAu6ewRBdwHPhBo/H" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script>
+    var ready = false;
+    var localvotes = {};
+    var cachedvotes = {};
+    let socket;
+    function connect() {
+      socket = io("http://localhost:3001");
+      socket.on("connect", () => {
+        ready = true;
+        document.getElementById("status").innerHTML = "connected";
+      })
+      axios.get("http://localhost:3001/snapshot").then(res => {
+        update(res.data);
+        socket.on("diff", (data) => update(data));
+      })
+    }
+    var currentlySendingTo = '';
+    var currentlyVoteCount = 0;
+    var timeout;
+    function vote(who) {
+      localvotes[who] = localvotes[who] ? localvotes[who] + 1 : 1;
+      document.getElementById(who).innerHTML = Number(document.getElementById(who).innerHTML) + 1;
+      if (currentlySendingTo !== '' && currentlySendingTo !== who && currentlyVoteCount !== 0) {
+        send(currentlySendingTo, currentlyVoteCount);
+        currentlyVoteCount = 0;
+      }
+      clearTimeout(timeout);
+      currentlySendingTo = who;
+      currentlyVoteCount++;
+      timeout = setTimeout(() => {
+        send(currentlySendingTo, currentlyVoteCount);
+        currentlyVoteCount = 0;
+      }, 2000);
+    }
+    function send(to, count) {
+      if (ready) {
+        console.log('sending', to , count)
+        socket.emit("vote", {
+          to: to,
+          count: count
+        });
+      }
+    }
+
+    function update(d) {
+      Object.keys(d).forEach(k => {
+        var oldCachedVote = cachedvotes[k] || 0;
+        var newDiff =  d[k] - oldCachedVote;
+        document.getElementById(k).innerHTML = d[k];
+        localvotes[k] = localvotes[k] ? localvotes[k] - newDiff : 0;
+        if (localvotes[k] < 0) { localvotes = 0; }
+        cachedvotes[k] = d[k];
+      });
+    }
+  </script>
+  <body>
+    <h1>test client</h1>
+    <button onclick="connect()">CONNECT NOW</button>
+    <div>status <span id="status"></span></div>
+    <button onclick="vote('seon')">VOTE SEON (<span id='seon'>0</span>)</button>
+    <button onclick="vote('lemon')">VOTE LEMON (<span id='lemon'>0</span>)</button>
+  </body>
+</html>
