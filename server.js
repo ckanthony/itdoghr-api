@@ -21,6 +21,11 @@ let connected = {};
 let votes = {};
 let lastUpdateVotes = {};
 
+const candidates = [
+  'lemon',
+  'seon',
+]
+
 app.use(cors());
 
 app.get('/ping', function(req, res) {
@@ -38,6 +43,7 @@ io.on('connection', socket => {
   socket.on('vote', (data) => {
     console.log('vote', data.to, data.count);
     if (!data.to || !data.count || data.count <= 0) { return }
+    if (!candidates.includes(data.to)) { return }
     voteQueue.add({
       who: data.to,
       count: data.count,
