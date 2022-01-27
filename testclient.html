@@ -45,6 +45,7 @@
           to: to,
           count: count
         });
+        localvotes[to] = 0;
       }
     }
 
@@ -52,9 +53,9 @@
       Object.keys(d).forEach(k => {
         var oldCachedVote = cachedvotes[k] || 0;
         var newDiff =  d[k] - oldCachedVote;
-        document.getElementById(k).innerHTML = d[k];
+        document.getElementById(k).innerHTML = d[k] + (localvotes[k] ? localvotes[k] : 0);
         localvotes[k] = localvotes[k] ? localvotes[k] - newDiff : 0;
-        if (localvotes[k] < 0) { localvotes = 0; }
+        if (localvotes[k] < 0) { localvotes[k] = 0; }
         cachedvotes[k] = d[k];
       });
     }
