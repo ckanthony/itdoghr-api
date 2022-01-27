@@ -15,7 +15,7 @@ jobs:
       - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker system prune -a -f
       - run: docker save api:${CIRCLE_BRANCH} | ssh -p${SSH_PORT} -C root@$SSH_ADDR sudo docker load
       - run: ssh root@$SSH_ADDR -p${SSH_PORT} "sudo docker rm -f api || true"
-      - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker run --restart=always --name api -d -p 127.0.0.1:$SERVER_PORT:$SERVER_PORT api:$CIRCLE_BRANCH
+      - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker run --restart=always --name api -d -p 127.0.0.1:$SERVER_PORT:$SERVER_PORT --network host api:$CIRCLE_BRANCH
   build-processor:
     machine: true
     steps:
@@ -28,7 +28,7 @@ jobs:
       - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker system prune -a -f
       - run: docker save processor:${CIRCLE_BRANCH} | ssh -p${SSH_PORT} -C root@$SSH_ADDR sudo docker load
       - run: ssh root@$SSH_ADDR -p${SSH_PORT} "sudo docker rm -f processor || true"
-      - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker run --restart=always --name processor -d processor:$CIRCLE_BRANCH
+      - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker run --restart=always --name processor -d --network host processor:$CIRCLE_BRANCH
 workflows:
   version: 2
   build-and-deploy-api:
