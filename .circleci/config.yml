@@ -21,13 +21,13 @@ jobs:
     steps:
       - checkout
       - run: >
-          docker build -t portal:$CIRCLE_BRANCH
+          docker build -t processor:$CIRCLE_BRANCH
           --build-arg REDIS_CONNECTION_STRING=$REDIS_CONNECTION_STRING
           --build-arg REDIS_DB_CONNECTION_STRING=$REDIS_DB_CONNECTION_STRING
           -f Dockerfile.processor .
       - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker system prune -a -f
-      - run: docker save portal:${CIRCLE_BRANCH} | ssh -p${SSH_PORT} -C root@$SSH_ADDR sudo docker load
-      - run: ssh root@$SSH_ADDR -p${SSH_PORT} "sudo docker rm -f portal || true"
+      - run: docker save processor:${CIRCLE_BRANCH} | ssh -p${SSH_PORT} -C root@$SSH_ADDR sudo docker load
+      - run: ssh root@$SSH_ADDR -p${SSH_PORT} "sudo docker rm -f processor || true"
       - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker run --restart=always --name processor -d processor:$CIRCLE_BRANCH
 workflows:
   version: 2
