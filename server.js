@@ -6,7 +6,7 @@ const Queue = require('bull');
 const _ = require('lodash');
 const app = express();
 const createClient = require('redis').createClient;
-const client = createClient({ url: process.env.REDIS_CONNECTION_STRING });
+const client = createClient({ url: process.env.REDIS_DB_CONNECTION_STRING });
 client.on('error', (err) => console.log('Redis Client Error', err));
 const voteQueue = new Queue('vote', process.env.REDIS_CONNECTION_STRING);
 
