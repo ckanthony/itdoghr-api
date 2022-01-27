@@ -59,15 +59,15 @@ async function updateVote(client) {
   votes = JSON.parse(await client.get('votes'));
   const diff = _.omitBy(votes, function(v,k) { return lastUpdateVotes[k] === v; });
   if (Object.keys(diff).length > 0) {
-    console.log('l', lastUpdateVotes);
-    console.log('v', votes);
-    console.log('d', diff);
+    // console.log('l', lastUpdateVotes);
+    // console.log('v', votes);
+    // console.log('d', diff);
     Object.keys(connected).forEach( k => {
       connected[k].emit('diff', diff);
     })
     lastUpdateVotes = _.clone(votes);
   }
-  setTimeout(async () => { await updateVote(client) }, 2000);
+  setTimeout(async () => { await updateVote(client) }, 500);
 }
 
 (async () => {
