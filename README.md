@@ -15,7 +15,7 @@ frontend 請見[連結](https://github.com/ckanthony/it-dog-voting)
 - this is a system using server client model, connecting with `socket.io` with `express.js` by using a hybrid of RESTful and websocket communication
 - in order to store data fast and effectively, the database we use is `redis` with data persistency settings, we have also make use of in memory cache for max performance
 - for each vote request, we shoot it into a message queue `bulljs` and its being processed by a processor process, which is the only point to write messages into the redis database, to avoid race conditions
-- the server can be scaled up vertically in case of big traffic with a load balancer setup
+- the server can be scaled up horizontally in case of big traffic with a load balancer setup
 
 
 local installation
