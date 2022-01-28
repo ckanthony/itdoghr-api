@@ -38,7 +38,7 @@ workflows:
             branches:
               only: prime
             tags:
-              ignore: processor
+              ignore: /processor*/
   build-and-deploy-processor:
     jobs:
       - build-processor:
@@ -46,4 +46,4 @@ workflows:
             branches:
               only: prime
             tags:
-              ignore: api
+              ignore: /api*/
