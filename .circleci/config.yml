@@ -7,28 +7,28 @@ jobs:
     steps:
       - checkout
       - run: >
-          docker build -t api:$CIRCLE_BRANCH
+          docker build -t api:${CIRCLE_BRANCH}${CIRCLE_TAG}
           --build-arg SERVER_PORT=$SERVER_PORT
           --build-arg REDIS_CONNECTION_STRING=$REDIS_CONNECTION_STRING
           --build-arg REDIS_DB_CONNECTION_STRING=$REDIS_DB_CONNECTION_STRING
           -f Dockerfile.server .
       - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker system prune -a -f
-      - run: docker save api:${CIRCLE_BRANCH} | ssh -p${SSH_PORT} -C root@$SSH_ADDR sudo docker load
+      - run: docker save api:${CIRCLE_BRANCH}${CIRCLE_TAG} | ssh -p${SSH_PORT} -C root@$SSH_ADDR sudo docker load
       - run: ssh root@$SSH_ADDR -p${SSH_PORT} "sudo docker rm -f api || true"
-      - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker run --restart=always --name api -d -p 127.0.0.1:$SERVER_PORT:$SERVER_PORT --network host api:$CIRCLE_BRANCH
+      - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker run --restart=always --name api -d -p 127.0.0.1:$SERVER_PORT:$SERVER_PORT --network host api:$CIRCLE_BRANCH${CIRCLE_TAG}
   build-processor:
     machine: true
     steps:
       - checkout
       - run: >
-          docker build -t processor:$CIRCLE_BRANCH
+          docker build -t processor:$CIRCLE_BRANCH${CIRCLE_TAG}
           --build-arg REDIS_CONNECTION_STRING=$REDIS_CONNECTION_STRING
           --build-arg REDIS_DB_CONNECTION_STRING=$REDIS_DB_CONNECTION_STRING
           -f Dockerfile.processor .
       - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker system prune -a -f
-      - run: docker save processor:${CIRCLE_BRANCH} | ssh -p${SSH_PORT} -C root@$SSH_ADDR sudo docker load
+      - run: docker save processor:${CIRCLE_BRANCH}${CIRCLE_TAG} | ssh -p${SSH_PORT} -C root@$SSH_ADDR sudo docker load
       - run: ssh root@$SSH_ADDR -p${SSH_PORT} "sudo docker rm -f processor || true"
-      - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker run --restart=always --name processor -d --network host processor:$CIRCLE_BRANCH
+      - run: ssh root@$SSH_ADDR -p${SSH_PORT} sudo docker run --restart=always --name processor -d --network host processor:$CIRCLE_BRANCH${CIRCLE_TAG}
 workflows:
   version: 2
   build-and-deploy-api:
