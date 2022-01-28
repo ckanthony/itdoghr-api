@@ -63,7 +63,7 @@ async function updateVote(client) {
     // console.log('v', votes);
     // console.log('d', diff);
     Object.keys(connected).forEach( k => {
-      connected[k[0]].emit('diff', diff);
+      connected[k][0].emit('diff', diff);
     })
     lastUpdateVotes = _.clone(votes);
   }
