@@ -37,7 +37,7 @@ app.get('/snapshot', function(req, res) {
 })
 
 io.on('connection', socket => {
-  connected[socket.id] = socket;
+  connected[socket.id] = [socket, null];
   console.log(`${socket.id} connected`);
 
   socket.on('vote', (data) => {
@@ -63,7 +63,7 @@ async function updateVote(client) {
     // console.log('v', votes);
     // console.log('d', diff);
     Object.keys(connected).forEach( k => {
-      connected[k].emit('diff', diff);
+      connected[k[0]].emit('diff', diff);
     })
     lastUpdateVotes = _.clone(votes);
   }
