@@ -96,7 +96,7 @@ io.on('connection', socket => {
   }
   (connectedIps[ip]).push(socket);
   connectedIps[ip] = (connectedIps[ip]).filter(c => !!c);
-  if ((connectedIps[ip]).length > 255) {
+  if ((connectedIps[ip]).length > 5) {
     if (connectedIps[ip][0]) {
       (connectedIps[ip][0]).disconnect();
       delete connectedIps[ip][0];
