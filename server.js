@@ -128,13 +128,17 @@ io.on('connection', socket => {
   socket.on('vote', (data) => {
     console.log('vote', data.to, data.count);
     if (!data.to || !data.count || data.count <= 0) { return }
-    if (data.count > 10) data.count = 10;
     if (connected[socket.id] && connected[socket.id][1]) {
-      if (Date.now() - connected[socket.id][1] <= 500) {
-        console.log(socket.id, 'bam');
+      if (Date.now() - connected[socket.id][1] <= 600) {
+        console.log(socket.id, 'bam - too fast');
+        return connected[socket.id][0].disconnect(true) // boom
+      }
+      if (data.count > 15) {
+        console.log(socket.id, 'bam - too big');
         return connected[socket.id][0].disconnect(true) // boom
       }
     }
+    if (data.count > 10) data.count = 10;
     connected[socket.id][1] = Date.now();
     if (!candidates.includes(data.to)) { return }
     voteQueue.add({
