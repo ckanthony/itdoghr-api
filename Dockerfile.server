@@ -1,0 +1,21 @@
+FROM node:lts-alpine
+
+ARG SERVER_PORT
+ARG REDIS_CONNECTION_STRING
+ARG REDIS_DB_CONNECTION_STRING
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Install app dependencies
+COPY package.json /usr/src/app/
+RUN npm install
+
+# Bundle app source
+COPY . /usr/src/app
+
+ENV REDIS_CONNECTION_STRING=${REDIS_CONNECTION_STRING}
+ENV REDIS_DB_CONNECTION_STRING=${REDIS_DB_CONNECTION_STRING}
+
+CMD [ "node", "server.js" ]
