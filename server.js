@@ -16,7 +16,7 @@ const io = new Server(server, {
   secure: true,
   transports: ['websocket',  'polling'],
   cors: {
-    origin: '*',
+    origin: 'https://itdoghr.com',
   }
 });
 
