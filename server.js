@@ -127,13 +127,15 @@ io.on('connection', socket => {
 
   socket.on('vote', (data) => {
     console.log('vote', data.to, data.count);
+    const ip = socket.handshake.headers['x-forwarded-for'] || socket.request.socket.remoteAddress;
     if (!data.to || !data.count || data.count <= 0) { return }
     if (connected[socket.id] && connected[socket.id][1]) {
-      const ip = socket.handshake.headers['x-forwarded-for'] || socket.request.socket.remoteAddress;
       if (Date.now() - connected[socket.id][1] <= 600) {
         console.log(socket.id, ip, 'bam - too fast');
         return connected[socket.id][0].disconnect(true) // boom
       }
+    }
+    if (connected[socket.id]) {
       if (data.count > 15) {
         console.log(socket.id, ip, 'bam - too big');
         return connected[socket.id][0].disconnect(true) // boom
