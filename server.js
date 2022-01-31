@@ -129,16 +129,20 @@ io.on('connection', socket => {
     console.log('vote', data.to, data.count);
     if (!data.to || !data.count || data.count <= 0) { return }
     if (connected[socket.id] && connected[socket.id][1]) {
+      const ip = socket.handshake.headers['x-forwarded-for'] || socket.request.socket.remoteAddress;
       if (Date.now() - connected[socket.id][1] <= 600) {
-        console.log(socket.id, 'bam - too fast');
+        console.log(socket.id, ip, 'bam - too fast');
         return connected[socket.id][0].disconnect(true) // boom
       }
       if (data.count > 15) {
-        console.log(socket.id, 'bam - too big');
+        console.log(socket.id, ip, 'bam - too big');
         return connected[socket.id][0].disconnect(true) // boom
       }
     }
-    if (data.count > 10) data.count = 10;
+    if (data.count > 10) {
+      data.count = 10;
+      console.log(socket.id, ip, 'warning - too big');
+    }
     connected[socket.id][1] = Date.now();
     if (!candidates.includes(data.to)) { return }
     voteQueue.add({
