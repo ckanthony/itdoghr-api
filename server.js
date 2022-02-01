@@ -76,6 +76,9 @@ const candidates = [
   "jimsiujim",
   "johnee",
   "zachary",
+  "kinlongchan",
+  "chingyanfu",
+  "yeungyingwai"
 ]
 
 app.use(cors());
