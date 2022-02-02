@@ -78,7 +78,13 @@ const candidates = [
   "zachary",
   "kinlongchan",
   "chingyanfu",
-  "yeungyingwai"
+  "yeungyingwai",
+  "dear_himmy",
+  "alextokong",
+  "belindayan",
+  "thomas_lam",
+  "joanna_lamlam",
+  "boyboy"
 ]
 
 app.use(cors());
