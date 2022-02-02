@@ -24,6 +24,7 @@ let connected = {};
 let votes = {};
 let lastUpdateVotes = {};
 let connectedIps = {};
+let bamIps = {};
 
 const candidates = [
   "siulungling",
@@ -138,15 +139,23 @@ io.on('connection', socket => {
     console.log('vote', data.to, data.count);
     const ip = socket.handshake.headers['x-forwarded-for'] || socket.request.socket.remoteAddress;
     if (!data.to || !data.count || data.count <= 0) { return }
+    if (!!bamIps[ip]) {
+      if (Date.now() - bamIps[ip] <= 1000 * 60 * 45) {
+        // we are going to rate limit these mother fucker.
+        return;
+      }
+    }
     if (connected[socket.id] && connected[socket.id][1]) {
-      if (Date.now() - connected[socket.id][1] <= 600) {
+      if (Date.now() - connected[socket.id][1] <= 650) { // based on max click = 15 times per 1 sec.
         console.log(socket.id, ip, 'bam - too fast');
+        bamIps[ip] = Date.now();
         return connected[socket.id][0].disconnect(true) // boom
       }
     }
     if (connected[socket.id]) {
       if (data.count > 15) {
         console.log(socket.id, ip, 'bam - too big');
+        bamIps[ip] = Date.now();
         return connected[socket.id][0].disconnect(true) // boom
       }
     }
