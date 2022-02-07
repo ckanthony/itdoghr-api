@@ -85,7 +85,8 @@ const candidates = [
   "belindayan",
   "thomas_lam",
   "joanna_lamlam",
-  "boyboy"
+  "boyboy",
+  "s2"
 ]
 
 app.use(cors());
